@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Onionsyrup - En Carame... Construcción</title>
+    <!-- Carga de Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Configuración de fuente y un fondo pegajoso */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #FEEBC8; /* Un color crema de azúcar */
+            background-image: repeating-linear-gradient(
+                45deg,
+                #FEEBC8 0,
+                #FEEBC8 10px,
+                #FBD38D 10px,
+                #FBD38D 20px
+            );
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Estilos personalizados para el icono de la gota de jarabe */
+        @keyframes drip {
+            0% { transform: translateY(-50px) scaleY(0.1); opacity: 0; }
+            50% { transform: translateY(0px) scaleY(1); opacity: 1; }
+            100% { transform: translateY(50px) scaleY(0.1); opacity: 0; }
+        }
+
+        .drip-animation {
+            animation: drip 3s infinite ease-in-out;
+            transform-origin: top;
+        }
+
+        /* Estilo para el cartel del mensaje */
+        #message-box {
+            transition: all 0.3s ease-in-out;
+        }
+    </style>
+</head>
+<body class="p-4">
+
+    <!-- Contenedor Principal (Tarjeta Pegajosa) -->
+    <div class="bg-white p-8 md:p-12 rounded-3xl shadow-2xl max-w-lg w-full text-center border-4 border-amber-800/50 transform rotate-[-1deg] hover:rotate-[0deg] transition duration-300">
+
+        <!-- Logo/Título de la Web -->
+        <h1 class="text-6xl font-extrabold text-amber-900 mb-2">
+            Onionsyrup
+        </h1>
+
+        <!-- Icono de Cebolla y Jarabe (Emoji) -->
+        <div class="text-8xl my-6 flex justify-center items-center">
+            <span class="inline-block transform rotate-[-15deg]">🧅</span>
+            <div class="relative mx-4">
+                <!-- Gota de Jarabe Animada (SVG) -->
+                <svg class="h-16 w-16 text-amber-600 absolute -top-10 left-1/2 transform -translate-x-1/2 drip-animation" viewBox="0 0 100 100" fill="currentColor">
+                    <path d="M50 0 C 70 20, 90 70, 50 100 C 10 70, 30 20, 50 0 Z"/>
+                </svg>
+                <span class="text-4xl">💧</span>
+            </div>
+            <span class="inline-block transform rotate-[15deg]">🍯</span>
+        </div>
+
+
+        <!-- Mensaje Principal -->
+        <h2 class="text-3xl md:text-4xl font-bold text-gray-800 mt-6 mb-4">
+            ¡Estamos en un Lío Azucarado!
+        </h2>
+        <p class="text-xl text-gray-600 mb-8">
+            La página que usted busca está siendo **caramelizada lentamente** por nuestros chefs-desarrolladores.
+        </p>
+
+        <!-- Barra de Progreso Humorística -->
+        <div class="mb-8">
+            <div class="text-left text-sm font-medium text-amber-900 mb-1">
+                Progreso de la Fermentación: <span id="progress-percent">1.5%</span> (Sabor Intenso)
+            </div>
+            <div class="w-full bg-gray-200 rounded-full h-4 relative overflow-hidden">
+                <!-- El progreso está casi atascado para la broma -->
+                <div id="progress-bar" class="bg-amber-500 h-4 rounded-full" style="width: 1.5%;"></div>
+                <!-- Un pequeño toque de humor adicional -->
+                <span class="absolute top-0 right-2 text-xs text-white leading-4">¡Pegado!</span>
+            </div>
+        </div>
+
+
+        <!-- Botón de Interacción Graciosa -->
+        <button id="secret-button"
+                class="w-full bg-red-600 text-white font-bold py-3 px-6 rounded-xl shadow-lg hover:bg-red-700 active:bg-red-800 transition transform hover:scale-105 active:scale-100 focus:outline-none focus:ring-4 focus:ring-red-300">
+            ⛔ NO PULSAR BAJO NINGÚN CONCEPTO ⛔
+        </button>
+
+        <!-- Mensaje oculto que aparece al pulsar -->
+        <div id="message-box" class="mt-6 p-4 bg-yellow-100 text-yellow-800 rounded-lg text-sm font-semibold hidden opacity-0">
+            ¡Te lo advertimos! Ahora tendrás que esperar hasta que el jarabe se seque. (O unos segundos más).
+        </div>
+
+        <p class="mt-6 text-sm text-gray-500">
+            Vuelva pronto. Prometemos que valdrá la pena la espera... o al menos será muy extraño.
+        </p>
+
+    </div>
+
+    <script>
+        const button = document.getElementById('secret-button');
+        const messageBox = document.getElementById('message-box');
+        const progressBar = document.getElementById('progress-bar');
+        const progressPercent = document.getElementById('progress-percent');
+        let timesClicked = 0;
+
+        // Función para simular el "progreso" después de la advertencia
+        function restartProgress() {
+            let currentWidth = 1.5;
+            const interval = setInterval(() => {
+                currentWidth += 0.5;
+                progressBar.style.width = currentWidth + '%';
+                progressPercent.textContent = currentWidth.toFixed(1) + '%';
+                if (currentWidth >= 5.0) {
+                    clearInterval(interval);
+                    // Resetear el botón
+                    messageBox.classList.add('opacity-0');
+                    setTimeout(() => {
+                        messageBox.classList.add('hidden');
+                        button.textContent = `⛔ NO PULSAR BAJO NINGÚN CONCEPTO ⛔`;
+                        button.classList.remove('bg-green-600');
+                        button.classList.add('bg-red-600');
+                        button.disabled = false;
+                    }, 500);
+                }
+            }, 500);
+        }
+
+        button.addEventListener('click', () => {
+            timesClicked++;
+            
+            // Mostrar el mensaje
+            messageBox.classList.remove('hidden');
+            setTimeout(() => messageBox.classList.remove('opacity-0'), 10);
+            
+            // Cambiar el texto del botón y deshabilitarlo temporalmente
+            button.textContent = `Has pulsado ${timesClicked} veces. ¡Ahora se ha vuelto más pegajoso!`;
+            button.classList.remove('bg-red-600');
+            button.classList.add('bg-green-600');
+            button.disabled = true;
+
+            // Iniciar la función de "progreso lento"
+            restartProgress();
+        });
+    </script>
+</body>
+</html>
